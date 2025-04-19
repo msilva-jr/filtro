@@ -26,23 +26,17 @@
       object-fit: cover;
     }
     #buttons {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      z-index: 10;
-    }
-    button {
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #ff8c00;
-      color: white;
-      cursor: pointer;
-    }
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  z-index: 10;
+}
+#buttons button {
+  position: absolute;
+  opacity: 0.9;
+}
   </style>
 </head>
 <body>
