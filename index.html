@@ -1,43 +1,91 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Filtro do Luan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filtro do Lucca</title>
   <style>
-    body { margin: 0; overflow: hidden; text-align: center; }
-    video, canvas { position: absolute; top: 0; left: 0; width: 100%; height: auto; }
-    #frame { position: absolute; top: 0; left: 0; width: 100%; z-index: 2; }
-    button { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 3; padding: 10px 20px; font-size: 18px; }
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      font-family: sans-serif;
+    }
+    #container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    video, img, canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #buttons {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      z-index: 10;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff8c00;
+      color: white;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <video id="video" autoplay playsinline></video>
-  <img id="frame" src="frame.png" alt="Frame">
-  <canvas id="canvas"></canvas>
-  <button onclick="takePhoto()">Tirar Foto</button>
+  <div id="container">
+    <video id="video" autoplay playsinline></video>
+    <img id="frame" src="frame.png" alt="frame">
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div id="buttons">
+      <button onclick="tirarFoto()">Tirar Foto</button>
+      <button onclick="compartilhar()">Compartilhar no Instagram</button>
+    </div>
+  </div>
 
   <script>
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+    const frame = document.getElementById('frame');
 
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
       .then(stream => {
         video.srcObject = stream;
+      })
+      .catch(error => {
+        alert("Erro ao acessar a câmera: " + error);
       });
 
-    function takePhoto() {
+    function tirarFoto() {
+      const ctx = canvas.getContext('2d');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0);
-      const frame = document.getElementById('frame');
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
 
-      const img = canvas.toDataURL("image/png");
+      const image = canvas.toDataURL("image/png");
       const link = document.createElement('a');
-      link.href = img;
-      link.download = 'foto_com_filtro.png';
+      link.href = image;
+      link.download = "foto_com_filtro.png";
       link.click();
+    }
+
+    function compartilhar() {
+      alert("Para compartilhar no Instagram:\n1. Vá até sua galeria\n2. Selecione a foto\n3. Compartilhe no story ou feed.");
     }
   </script>
 </body>
