@@ -2,45 +2,51 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Filtro do Lucca</title>
   <style>
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
       background: #000;
-      font-family: sans-serif;
+      height: 100%;
+      overflow: hidden;
+    }
+    * {
+      box-sizing: border-box;
     }
     #container {
-      position: relative;
+      position: fixed;
+      top: 0; left: 0;
       width: 100vw;
       height: 100vh;
+      z-index: 0;
     }
     video, img, canvas {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
     #buttons {
-      position: absolute;
+      position: fixed;
       bottom: 20px;
+      left: 0;
       width: 100%;
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 16px;
       z-index: 10;
     }
     button {
-      padding: 12px 20px;
+      padding: 14px 20px;
       font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #ff8c00;
+      background: #ff8c00;
       color: white;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
       cursor: pointer;
     }
   </style>
@@ -48,12 +54,12 @@
 <body>
   <div id="container">
     <video id="video" autoplay playsinline></video>
-    <img id="frame" src="frame.png" alt="frame">
+    <img id="frame" src="frame.png" alt="Moldura do Lucca">
     <canvas id="canvas" style="display:none;"></canvas>
-    <div id="buttons">
-      <button onclick="tirarFoto()">Tirar Foto</button>
-      <button onclick="compartilhar()">Compartilhar no Instagram</button>
-    </div>
+  </div>
+  <div id="buttons">
+    <button onclick="tirarFoto()">📸 Tirar Foto</button>
+    <button onclick="compartilhar()">📤 Compartilhar</button>
   </div>
 
   <script>
@@ -61,32 +67,4 @@
     const canvas = document.getElementById('canvas');
     const frame = document.getElementById('frame');
 
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-      .then(stream => {
-        video.srcObject = stream;
-      })
-      .catch(error => {
-        alert("Erro ao acessar a câmera: " + error);
-      });
-
-    function tirarFoto() {
-      const ctx = canvas.getContext('2d');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-
-      const image = canvas.toDataURL("image/png");
-      const link = document.createElement('a');
-      link.href = image;
-      link.download = "foto_com_filtro.png";
-      link.click();
-    }
-
-    function compartilhar() {
-      alert("Para compartilhar no Instagram:\n1. Vá até sua galeria\n2. Selecione a foto\n3. Compartilhe no story ou feed.");
-    }
-  </script>
-</body>
-</html>
+    navigator.mediaDevices.getUserMedia({ video:
