@@ -25,27 +25,26 @@
       height: 100%;
       object-fit: cover;
     }
-#buttons {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
-  z-index: 10;
-}
-
-button {
-  padding: 12px 16px;
-  font-size: 14px;
-  border: none;
-  border-radius: 8px;
-  background-color: #ff8c00;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
+    #buttons {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      z-index: 10;
+    }
+    button {
+      padding: 12px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff8c00;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
@@ -56,6 +55,7 @@ button {
     <div id="buttons">
       <button onclick="tirarFoto()">Tirar Foto</button>
       <button onclick="compartilhar()">Compartilhar no Instagram</button>
+      <button onclick="alternarCamera()">Trocar Câmera</button>
     </div>
   </div>
 
@@ -64,13 +64,27 @@ button {
     const canvas = document.getElementById('canvas');
     const frame = document.getElementById('frame');
 
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-      .then(stream => {
-        video.srcObject = stream;
-      })
-      .catch(error => {
+    let usandoCameraFrontal = true;
+    let currentStream;
+
+    async function iniciarCamera() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+
+      const constraints = {
+        video: {
+          facingMode: usandoCameraFrontal ? "user" : "environment"
+        }
+      };
+
+      try {
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = currentStream;
+      } catch (error) {
         alert("Erro ao acessar a câmera: " + error);
-      });
+      }
+    }
 
     function tirarFoto() {
       const ctx = canvas.getContext('2d');
@@ -90,6 +104,14 @@ button {
     function compartilhar() {
       alert("Para compartilhar no Instagram:\n1. Vá até sua galeria\n2. Selecione a foto\n3. Compartilhe no story ou feed.");
     }
+
+    function alternarCamera() {
+      usandoCameraFrontal = !usandoCameraFrontal;
+      iniciarCamera();
+    }
+
+    // Inicia com a câmera frontal
+    iniciarCamera();
   </script>
 </body>
 </html>
